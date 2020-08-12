@@ -57,3 +57,73 @@ const pTag = document.querySelector('p');
 
 pTag.style.backgroundColor = 'black';
 pTag.style.color = 'white';
+
+const li = document.querySelector('li');
+
+console.log(getComputedStyle(li));
+
+const todo = document.querySelector('#todos .todo');
+
+// todo.style.color = 'gray';
+// todo.style.textDecoration = 'line-through';
+// todo.style.opacity = '50%';
+
+todo.classList.toggle('done');
+
+const newh2 = document.createElement('h2');
+newh2.innerHTML = '<b> Hi THere</b>';
+newh2.classList.add('special');
+
+
+const section = document.querySelector('section');
+
+section.appendChild(newh2);
+
+const imgTag = document.createElement('img');
+
+// https://images.unsplash.com/photo-1573920111312-04f1b25c6b85?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1268&q=80
+
+imgTag.src = 'https://images.unsplash.com/photo-1573920111312-04f1b25c6b85?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1268&q=80';
+
+imgTag.width = 300;
+imgTag.height = 500;
+
+section.appendChild(imgTag);
+
+
+const parentUl = document.querySelector('#todos');
+
+const newLi = document.createElement('li');
+
+newLi.innerText = 'I\'m added newly !!!';
+
+newLi.classList.add('todo');
+
+
+// parentUl.appendChild(newLi);
+
+firstLiTodo = document.querySelector('li.todo');
+
+parentUl.insertBefore(newLi, firstLiTodo);
+
+const i = document.createElement('i');
+i.innerText = 'I\'M ITALICS';
+
+p.insertAdjacentElement('beforeend', i)
+
+
+// 
+
+p.append(i, newLi);
+p.prepend(i, newLi);
+
+// remove, removeChild
+
+const spUl = document.querySelector('section ul');
+console.log(spUl);
+
+const spLi = spUl.querySelector('.special');
+
+spUl.removeChild(spLi);
+
+ h1.remove();
