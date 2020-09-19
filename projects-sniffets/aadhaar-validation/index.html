@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aadhaar Validation</title>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style>
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-6 m-auto">
+                <div class="form-group">
+                    <label for="aadhaar">Aadhhaar Your Number</label>
+                    <input maxlength="12" type="number" class="form-control" name="aadhaar" id="aadhaar"
+                        aria-describedby="aadhaarHelp" placeholder="Enter Aadhaar number">
+                    <small id="aadhaarHelp" class="form-text text-muted">Please enter only numbers</small>
+                    <div class="invalid-feedback">
+                        Aadhaar Card is Invalid.
+                    </div>
+                    <div class="valid-feedback">
+                        Aadhaar Card is Valid.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS, Popper.js, and jQuery -->
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script> -->
+
+
+    <script>
+
+        const form = document.querySelector('#aadhaar_form');
+        const aadhaarInput = document.querySelector('#aadhaar');
+
+        aadhaarInput.addEventListener('keydown', (e) => {
+
+            if (e.key === 'ArrowDown' || e.key === 'Down' || e.key === 'ArrowUp' || e.key === 'Up') {
+                e.preventDefault();
+            }
+
+            if (aadhaarInput.value.length === 12) {
+                if (Number(e.key) >= 0 && Number(e.key) <= 9) {
+                    e.preventDefault();
+                }
+
+            }
+        });
+
+        aadhaarInput.addEventListener('input', function () {
+
+            if (this.value.length === 12) {
+                if (validateVerhoeff(this.value)) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            } else {
+                this.classList.remove('is-valid', 'is-invalid');
+            }
+        })
+
+        var d = [
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+            [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+            [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+            [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+            [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+            [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+            [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+            [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+            [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        ];
+
+
+        // The permutation table
+        var p = [
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+            [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+            [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+            [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+            [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+            [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+            [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+        ];
+
+
+        // The inverse table
+        var inv = [0, 4, 3, 2, 1, 5, 6, 7, 8, 9];
+
+        //  Validates that an entered number is Verhoeff compliant.
+
+        function validateVerhoeff(num) {
+            //  alert("funcall" + num);
+            var cc;
+            var c = 0;
+            var myArray = StringToReversedIntArray(num);
+
+            for (var i = 0; i < myArray.length; i++) {
+
+                c = d[c][p[(i % 8)][myArray[i]]];
+
+            }
+
+            cc = c;
+            if (cc == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+
+
+        /*
+         * Converts a string to a reversed integer array.
+         */
+        function StringToReversedIntArray(num) {
+
+            var myArray = [num.length];
+
+            for (var i = 0; i < num.length; i++) {
+
+                myArray[i] = (num.substring(i, i + 1));
+
+            }
+
+            myArray = Reverse(myArray);
+
+            return myArray;
+
+        }
+
+        /*
+         * Reverses an int array
+         */
+        function Reverse(myArray) {
+
+            var reversed = [myArray.length];
+
+            for (var i = 0; i < myArray.length; i++) {
+                reversed[i] = myArray[myArray.length - (i + 1)];
+
+            }
+
+            return reversed;
+        }
+
+
+
+    </script>
+</body>
+
+</html>
