@@ -1,10 +1,3 @@
-// console.log('Hi there!');
-// Here is your key: c59a0c3b
-
-// Please append it to all of your API requests,
-
-// OMDb API: http://www.omdbapi.com/?i=tt3896198&apikey=c59a0c3b
-
 const leftAutoCompleteRoot = document.querySelector('#left-auto-complete');
 const rightAutoCompleteRoot = document.querySelector('#right-auto-complete');
 
@@ -26,16 +19,16 @@ const autoCompleteConfig = {
     async fetchData(searchTerm) {
         const response = await axios.get('http://www.omdbapi.com/', {
             params: {
-                apikey: 'c59a0c3b',
+                apikey: '-- api key, get it from http://www.omdbapi.com/ ---',
                 s: searchTerm
                 // i: 'tt0848228'
             }
         });
-    
+
         if (response.data.Error) {
             return [];
         }
-    
+
         return response.data.Search;
     }
 }
@@ -175,7 +168,7 @@ const movieTemplate = movieDetail => {
 
 // Clear
 
-clearBtn.addEventListener('click', function() {
+clearBtn.addEventListener('click', function () {
 
     leftAutoCompleteRoot.querySelector('input').value = '';
     rightAutoCompleteRoot.querySelector('input').value = '';
